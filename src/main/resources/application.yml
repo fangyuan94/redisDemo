@@ -1,0 +1,19 @@
+spring:
+  data:
+    redis:
+      repositories:
+        enabled: true
+  redis:
+    client-name: test
+    database: 0
+    host: localhost
+    port: 6379
+    timeout: 5000
+    jedis:
+      pool:
+        max-idle: 10
+        min-idle: 0
+        max-active: 10
+        max-wait: -1
+server:
+  port: 18670
