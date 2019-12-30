@@ -18,13 +18,19 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfiguration {
 
     @Bean
-    public RedisTemplate<String, PersonInfo> personInfoRedisTemplate(ObjectProvider<RedisConnectionFactory> redisConnectionFactory){
+    public StringRedisSerializer stringRedisSerializer(){
+
+        return new StringRedisSerializer();
+    }
+
+    @Bean
+    public RedisTemplate<String, PersonInfo> personInfoRedisTemplate(
+            StringRedisSerializer stringRedisSerializer
+            ,ObjectProvider<RedisConnectionFactory> redisConnectionFactory){
 
         RedisTemplate<String, PersonInfo> personInfoRedisTemplate = new RedisTemplate<String, PersonInfo>();
 
         personInfoRedisTemplate.setConnectionFactory(redisConnectionFactory.getObject());
-        //Str序列化起
-        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         JdkSerializationRedisSerializer jdkSerializationRedisSerializer = new JdkSerializationRedisSerializer(PersonInfo.class.getClassLoader());
         //设置key value序列化器
         personInfoRedisTemplate.setKeySerializer(stringRedisSerializer);
@@ -34,4 +40,7 @@ public class RedisConfiguration {
 
         return personInfoRedisTemplate;
     }
+
+
+
 }

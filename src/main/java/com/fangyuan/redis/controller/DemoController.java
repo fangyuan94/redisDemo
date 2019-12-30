@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author haizi
@@ -30,6 +31,8 @@ public class DemoController {
 
     @Autowired
     private RedisTemplate<String, PersonInfo> personInfoRedisTemplate;
+
+    private AtomicInteger atomicInteger = new AtomicInteger(1);
 
     @RequestMapping("test")
     public Map<String,Object> test(){
@@ -329,9 +332,24 @@ public class DemoController {
         return map;
     }
 
-    @RequestMapping("mqTest")
-    public  Map<String,Object> mqTest(){
+    /**
+     * 发送信息到mq
+     * @return
+     */
+    @RequestMapping("produceMessage")
+    public  Map<String,Object> produceMessage(){
 
+        String channel = "redis_mq_test_1";
+
+        int count = atomicInteger.incrementAndGet();
+
+        if(count%2==0){
+            channel = "redis_mq_test_2";
+        }
+
+        String message = "测试使用redis作为MQ发送数据__"+count;
+        //发布信息
+        stringRedisTemplate.convertAndSend(channel,message);
 
         Map<String,Object> map = new HashMap<>(3);
         map.put("success",true);
